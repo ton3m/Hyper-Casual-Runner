@@ -164,7 +164,7 @@ PlayerSettings:
   androidMinAspectRatio: 1
   applicationIdentifier:
     Android: com.DefaultCompany.StickmanRush
-    Standalone: com.DefaultCompany.Hyper-Casual-Runner
+    Standalone: com.DefaultCompany.Stickman-Rush
   buildNumber:
     Standalone: 0
     VisionOS: 0
