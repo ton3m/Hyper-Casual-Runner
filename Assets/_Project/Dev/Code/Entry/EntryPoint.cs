@@ -11,13 +11,14 @@ namespace PizzaMaker.Code.EntryPoint
         private void Awake()
         {
             SetupAppSettings();
-            
+
             DIContainer container = new();
-            
+
             RegResourcesAssetLoader(container);
             RegCoroutinePerformer(container);
+            RegLoadingCurtain(container);
             RegSceneLoader(container);
-            
+
             container.Resolve<ICoroutinePerformer>().StartPerform(_bootstrap.Run(container));
         }
 
@@ -27,15 +28,18 @@ namespace PizzaMaker.Code.EntryPoint
             Application.targetFrameRate = 60;
         }
 
-        private void RegSceneLoader(DIContainer container)
+        private void RegSceneLoader(DIContainer container) =>
+            container.RegisterAsSingle<ISceneLoader>(c => new SceneLoader());
+
+        private void RegLoadingCurtain(DIContainer container)
         {
             container.RegisterAsSingle<ILoadingCurtain>(c =>
             {
                 var loader = c.Resolve<ResourcesAssetLoader>();
-                
+
                 LoadingCurtain prefab = loader
                     .LoadResource<LoadingCurtain>(ResourcesPaths.LoadingCurtain);
-                
+
                 return Instantiate(prefab);
             });
         }
@@ -45,10 +49,10 @@ namespace PizzaMaker.Code.EntryPoint
             container.RegisterAsSingle<ICoroutinePerformer>(c =>
             {
                 var loader = c.Resolve<ResourcesAssetLoader>();
-                
+
                 CoroutinePerformer prefab = loader
                     .LoadResource<CoroutinePerformer>(ResourcesPaths.CoroutinePerformer);
-                
+
                 return Instantiate(prefab);
             });
         }

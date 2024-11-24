@@ -41,14 +41,6 @@ namespace CourseGame.Develop.DI
             throw new InvalidOperationException($"Registration for type {typeof(T)} not found");
         }
 
-        private T CreateFrom<T>(Registration registration)
-        {
-            if (registration.Instance == null && registration.Creator != null)
-                registration.Instance = registration.Creator(this);
-
-            return (T)registration.Instance;
-        }
-
         public void RegisterAsSingle<T>(Func<DIContainer, T> creator)
         {
             if (_container.ContainsKey(typeof(T)))
@@ -61,11 +53,18 @@ namespace CourseGame.Develop.DI
             _container[typeof(T)] = registration;
         }
 
-        public class Registration
+        private T CreateFrom<T>(Registration registration)
         {
-            public Func<DIContainer, object> Creator;
-            public object Instance { get; set; }
+            if (registration.Instance == null && registration.Creator != null)
+                registration.Instance = registration.Creator(this);
 
+            return (T)registration.Instance;
+        }
+
+        private class Registration
+        {
+            public readonly Func<DIContainer, object> Creator;
+            public object Instance { get; set; }
 
             public Registration(object instance) => Instance = instance;
 
