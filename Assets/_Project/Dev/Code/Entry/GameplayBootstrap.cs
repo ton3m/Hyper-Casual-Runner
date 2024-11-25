@@ -13,7 +13,7 @@ namespace PizzaMaker.Code.EntryPoint
             Debug.Log("Gameplay bootstrapper started.");
             
             yield return LoadLevel(container, args);
-
+            
             Debug.Log("Gameplay bootstrapper finished.");
         }
 
