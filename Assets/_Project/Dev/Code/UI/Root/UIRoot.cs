@@ -5,26 +5,40 @@ using UnityEngine;
 
 public class UIRoot : MonoBehaviour
 {
-    [SerializeField] private UIStateChanger _stateChanger;
     [SerializeField] private WindowsHolder _windowsHolder;
+    [SerializeField] private LayersHolder _layersHolder;
+
+    private UIStateMachine _stateMachine;
+    private WindowsService _windowsService;
 
     private List<LevelProgressBar> _levelProgressBars = new();
 
     private void Awake()
     {
-        Dictionary<WindowId, GameObject> windows = _windowsHolder.Windows;
-        var windowsService = new WindowsService(windows);
+        _windowsService = new WindowsService(_windowsHolder.Windows);
+        var layersActivator = new LayersActivator(_layersHolder.Layers);
 
-        var gameplayProcessService = new GameplayProcessService();
+        _stateMachine = new UIStateMachine(layersActivator);
+        _stateMachine.GameStateEntered += () => GameManager.Instance.gameStarted = true;
 
-        _stateChanger.GameStateEntered += gameplayProcessService.Start;
 
-        InitElements(windowsService);
+        InitElements(_windowsService);
     }
+
+    private void Start() => _stateMachine.EnterMenuState();
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space)) HandleWinLose(true);
+
         _levelProgressBars.ForEach(bar => bar.UpdateProgress(PathFollower.Instance.pathProgress));
+    }
+
+    private void HandleWinLose(bool isWin)
+    {
+        _stateMachine.EnterFinishState();
+
+        _windowsService.Open(isWin ? WindowId.Win : WindowId.Lose);
     }
 
     private void InitElements(WindowsService windowsService)
@@ -33,7 +47,7 @@ public class UIRoot : MonoBehaviour
         List<StartGameButton> startGameButtons = GetComponentsInChildren<StartGameButton>(true).ToList();
         _levelProgressBars = GetComponentsInChildren<LevelProgressBar>(true).ToList();
 
-        startGameButtons.ForEach(button => button.Initialize(_stateChanger.EnterGameState));
+        startGameButtons.ForEach(button => button.Initialize(_stateMachine.EnterGameState));
         openWindowButtons.ForEach(button => button.Initialize(windowsService));
     }
 }
