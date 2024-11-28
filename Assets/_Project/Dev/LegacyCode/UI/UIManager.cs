@@ -34,12 +34,10 @@ public class UIManager : MonoBehaviour
         {
             ActivateUI(winUI);
         }
-
         if (GameManager.Instance.gameLost)
         {
             ActivateUI(loseUI);
         }
-
         SetLevelText();
         SetProcessLevel();
     }

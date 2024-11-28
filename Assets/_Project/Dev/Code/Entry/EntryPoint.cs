@@ -1,9 +1,8 @@
-﻿using PizzaMaker.Code.Consts;
+﻿using CourseGame.Develop.DI;
 using PizzaMaker.Code.Services;
-using PizzaMaker.Code.Services.Scene;
 using UnityEngine;
 
-namespace PizzaMaker.Code.Entry
+namespace PizzaMaker.Code.EntryPoint
 {
     public class EntryPoint : MonoBehaviour
     {
@@ -12,14 +11,13 @@ namespace PizzaMaker.Code.Entry
         private void Awake()
         {
             SetupAppSettings();
-
+            
             DIContainer container = new();
-
+            
             RegResourcesAssetLoader(container);
             RegCoroutinePerformer(container);
-            RegLoadingCurtain(container);
             RegSceneLoader(container);
-
+            
             container.Resolve<ICoroutinePerformer>().StartPerform(_bootstrap.Run(container));
         }
 
@@ -29,36 +27,33 @@ namespace PizzaMaker.Code.Entry
             Application.targetFrameRate = 60;
         }
 
-        private void RegSceneLoader(DIContainer container) =>
-            container.RegisterAsSingle<ISceneLoader>(c => new SceneLoader());
-
-        private void RegLoadingCurtain(DIContainer container)
+        private void RegSceneLoader(DIContainer container)
         {
             container.RegisterAsSingle<ILoadingCurtain>(c =>
             {
                 var loader = c.Resolve<ResourcesAssetLoader>();
-
+                
                 LoadingCurtain prefab = loader
                     .LoadResource<LoadingCurtain>(ResourcesPaths.LoadingCurtain);
-
+                
                 return Instantiate(prefab);
             });
         }
 
-        private void RegCoroutinePerformer(DIContainer container)
+        private static void RegCoroutinePerformer(DIContainer container)
         {
             container.RegisterAsSingle<ICoroutinePerformer>(c =>
             {
                 var loader = c.Resolve<ResourcesAssetLoader>();
-
+                
                 CoroutinePerformer prefab = loader
                     .LoadResource<CoroutinePerformer>(ResourcesPaths.CoroutinePerformer);
-
+                
                 return Instantiate(prefab);
             });
         }
 
-        private void RegResourcesAssetLoader(DIContainer container)
+        private static void RegResourcesAssetLoader(DIContainer container)
         {
             container.RegisterAsSingle(c => new ResourcesAssetLoader());
         }

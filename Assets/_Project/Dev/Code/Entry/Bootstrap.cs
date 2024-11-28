@@ -1,35 +1,27 @@
 ﻿using System.Collections;
+using CourseGame.Develop.DI;
 using PizzaMaker.Code.Services;
 using UnityEngine;
 
-namespace PizzaMaker.Code.Entry
+namespace PizzaMaker.Code.EntryPoint
 {
     public class Bootstrap : MonoBehaviour
     {
         public IEnumerator Run(DIContainer container)
         {
-            Debug.Log("Game Bootstrap started");
-
+            //init all services, data, configs, ads, analytics, etc
+            
             var curtain = container.Resolve<ILoadingCurtain>();
-
             curtain.Show();
-
-            yield return EnterGameplay(new DIContainer(container));
             
+            Debug.Log("Bootstrap started");
+            
+            yield return new WaitForSeconds(3); //service init example
+            
+            Debug.Log("Bootstrap finished");
             curtain.Hide();
-
-            Debug.Log("Game Bootstrap finished.");
-        }
-        
-        private IEnumerator EnterGameplay(DIContainer container)
-        {
-            var levelIndex = 0;
             
-            GameplayBootstrapArgs args = new(levelIndex);
-            
-            var bootstrap = new GameplayBootstrap();
-            
-            yield return bootstrap.Run(new DIContainer(container), args);
+            //transition to next scene
         }
     }
 }
