@@ -1,4 +1,4 @@
-﻿namespace PizzaMaker.Code.EntryPoint
+﻿namespace PizzaMaker.Code.Consts
 {
     public static class ResourcesPaths
     {
