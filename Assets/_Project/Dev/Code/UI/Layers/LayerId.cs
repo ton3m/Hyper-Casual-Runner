@@ -1,6 +1,9 @@
-﻿public enum LayerId
+﻿namespace PizzaMaker.Code.UI.Layers
 {
-    None = 0,
-    Menu = 1,
-    Game = 2,
+    public enum LayerId
+    {
+        None = 0,
+        Menu = 1,
+        Game = 2,
+    }
 }

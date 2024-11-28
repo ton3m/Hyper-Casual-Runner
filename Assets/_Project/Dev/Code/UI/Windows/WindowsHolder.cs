@@ -2,10 +2,13 @@
 using System.Linq;
 using UnityEngine;
 
-public class WindowsHolder : MonoBehaviour
+namespace PizzaMaker.Code.UI.Windows
 {
-    [SerializeField] private List<IdentifiedWindow> _windows;
+    public class WindowsHolder : MonoBehaviour
+    {
+        [SerializeField] private List<IdentifiedWindow> _windows;
     
-    public Dictionary<WindowId, GameObject> Windows =>
-        _windows.ToDictionary(w => w.Id, w => w.Window);
+        public Dictionary<WindowId, GameObject> Windows =>
+            _windows.ToDictionary(w => w.Id, w => w.Window);
+    }
 }

@@ -1,7 +1,10 @@
-﻿public enum WindowId
+﻿namespace PizzaMaker.Code.UI.Windows
 {
-    None = 0,
-    Settings = 1,
-    Win = 2,
-    Lose = 3
+    public enum WindowId
+    {
+        None = 0,
+        Settings = 1,
+        Win = 2,
+        Lose = 3
+    }
 }

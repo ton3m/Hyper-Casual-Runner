@@ -3,32 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class LayersActivator 
+namespace PizzaMaker.Code.UI.Layers
 {
-    private readonly Dictionary<LayerId, GameObject[]> _layers;
-
-    public LayersActivator(Dictionary<LayerId, GameObject[]> layers)
+    public class LayersActivator : ILayersActivator
     {
-        _layers = layers;
+        private readonly Dictionary<LayerId, GameObject[]> _layers;
+
+        public LayersActivator(Dictionary<LayerId, GameObject[]> layers)
+        {
+            _layers = layers;
+        }
+
+        public void Enable(LayerId layerId)
+        {
+            if (!_layers.TryGetValue(layerId, out GameObject[] layer))
+                throw new ArgumentException($"Layer {layerId} not found");
+
+            foreach (GameObject obj in layer) 
+                obj.SetActive(true);
+        }
+
+        public void Disable(LayerId layerId)
+        {
+            if (!_layers.TryGetValue(layerId, out GameObject[] layer))
+                throw new ArgumentException($"Layer {layerId} not found");
+
+            foreach (GameObject obj in layer)
+                obj.SetActive(false);
+        }
+
+        public void DisableAll() => _layers.Keys.ToList().ForEach(Disable);
     }
-
-    public void Enable(LayerId layerId)
-    {
-        if (!_layers.TryGetValue(layerId, out GameObject[] layer))
-            throw new ArgumentException($"Layer {layerId} not found");
-
-        foreach (GameObject obj in layer) 
-            obj.SetActive(true);
-    }
-
-    public void Disable(LayerId layerId)
-    {
-        if (!_layers.TryGetValue(layerId, out GameObject[] layer))
-            throw new ArgumentException($"Layer {layerId} not found");
-
-        foreach (GameObject obj in layer)
-            obj.SetActive(false);
-    }
-
-    public void DisableAll() => _layers.Keys.ToList().ForEach(Disable);
 }

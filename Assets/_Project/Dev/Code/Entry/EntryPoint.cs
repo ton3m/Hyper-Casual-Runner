@@ -1,8 +1,9 @@
-﻿using CourseGame.Develop.DI;
+﻿using PizzaMaker.Code.Consts;
 using PizzaMaker.Code.Services;
+using PizzaMaker.Code.Services.Scene;
 using UnityEngine;
 
-namespace PizzaMaker.Code.EntryPoint
+namespace PizzaMaker.Code.Entry
 {
     public class EntryPoint : MonoBehaviour
     {
@@ -44,7 +45,7 @@ namespace PizzaMaker.Code.EntryPoint
             });
         }
 
-        private static void RegCoroutinePerformer(DIContainer container)
+        private void RegCoroutinePerformer(DIContainer container)
         {
             container.RegisterAsSingle<ICoroutinePerformer>(c =>
             {
@@ -57,7 +58,7 @@ namespace PizzaMaker.Code.EntryPoint
             });
         }
 
-        private static void RegResourcesAssetLoader(DIContainer container)
+        private void RegResourcesAssetLoader(DIContainer container)
         {
             container.RegisterAsSingle(c => new ResourcesAssetLoader());
         }

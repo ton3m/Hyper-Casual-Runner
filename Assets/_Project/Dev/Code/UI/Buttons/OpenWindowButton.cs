@@ -1,10 +1,19 @@
-﻿using UnityEngine;
+﻿using System;
+using PizzaMaker.Code.Services.UI;
+using PizzaMaker.Code.UI.Windows;
+using UnityEngine;
 
-public class OpenWindowButton : ActionButton
+namespace PizzaMaker.Code.UI.Buttons
 {
-    [SerializeField] private WindowId _windowId;
+    public class OpenWindowButton : ActionButton
+    {
+        [SerializeField] private WindowId _windowId;
+        private IWindowsService _windowsService;
 
-    public void Initialize(IWindowsService windowsService) => 
-        SetOnClicked(() => windowsService.Open(_windowId));
+        public void Initialize(IWindowsService windowsService) => 
+            _windowsService = windowsService;
+
+        protected override void OnClicked() => _windowsService.Open(_windowId);
+    }
 }
 

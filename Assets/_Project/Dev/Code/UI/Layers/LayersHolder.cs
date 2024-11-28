@@ -2,10 +2,13 @@
 using System.Linq;
 using UnityEngine;
 
-public class LayersHolder : MonoBehaviour
+namespace PizzaMaker.Code.UI.Layers
 {
-    [SerializeField] private List<IdentifiedLayer> _layersList = new();
+    public class LayersHolder : MonoBehaviour
+    {
+        [SerializeField] private List<IdentifiedLayer> _layersList = new();
     
-    public Dictionary<LayerId, GameObject[]> Layers =>
-        _layersList.ToDictionary(x => x.Id, x => x.Elements);
+        public Dictionary<LayerId, GameObject[]> Layers =>
+            _layersList.ToDictionary(x => x.Id, x => x.Elements);
+    }
 }

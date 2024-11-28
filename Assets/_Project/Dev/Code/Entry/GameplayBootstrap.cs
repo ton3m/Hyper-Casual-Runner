@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
-using CourseGame.Develop.DI;
-using PizzaMaker.Code.Services;
+using PizzaMaker.Code.Services.Scene;
 using UnityEngine;
 
-namespace PizzaMaker.Code.EntryPoint
+namespace PizzaMaker.Code.Entry
 {
     public class GameplayBootstrap
     {

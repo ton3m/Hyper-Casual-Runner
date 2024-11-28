@@ -1,9 +1,12 @@
 ﻿using System;
 using UnityEngine;
 
-[Serializable]
-public struct IdentifiedLayer
+namespace PizzaMaker.Code.UI.Layers
 {
-    public LayerId Id;
-    public GameObject[] Elements;
+    [Serializable]
+    public struct IdentifiedLayer
+    {
+        public LayerId Id;
+        public GameObject[] Elements;
+    }
 }

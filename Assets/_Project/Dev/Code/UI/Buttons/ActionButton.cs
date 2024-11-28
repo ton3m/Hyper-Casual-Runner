@@ -3,23 +3,31 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Button))]
-public class ActionButton : MonoBehaviour
+namespace PizzaMaker.Code.UI.Buttons
 {
-    private UnityAction _onClicked = null;
-    private Button _button;
-
-    private void Awake() => _button = GetComponent<Button>();
-    
-    private void Start()
+    [RequireComponent(typeof(Button))]
+    public abstract class ActionButton : MonoBehaviour
     {
-        if (_onClicked == null)
-            throw new NullReferenceException(nameof(_onClicked));
-        
-        _button.onClick.AddListener(_onClicked);
-    }
-
-    private void OnDestroy() => _button.onClick.RemoveAllListeners();
+        private UnityAction _onClicked;
     
-    public void SetOnClicked(Action onClicked) => _onClicked = new UnityAction(onClicked);
+        private Button _button;
+
+        private void Awake()
+        {
+            _onClicked = OnClicked;
+            _button = GetComponent<Button>();
+        }
+
+        private void Start()
+        {
+            if (_onClicked == null)
+                throw new NullReferenceException(nameof(_onClicked));
+        
+            _button.onClick.AddListener(_onClicked);
+        }
+        
+        private void OnDestroy() => _button.onClick.RemoveAllListeners();
+        
+        protected abstract void OnClicked();
+    }
 }

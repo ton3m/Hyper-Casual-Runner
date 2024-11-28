@@ -1,9 +1,12 @@
 ﻿using System;
 using UnityEngine;
 
-[Serializable]
-public struct IdentifiedWindow
+namespace PizzaMaker.Code.UI.Windows
 {
-    public WindowId Id;
-    public GameObject Window;
+    [Serializable]
+    public struct IdentifiedWindow
+    {
+        public WindowId Id;
+        public GameObject Window;
+    }
 }

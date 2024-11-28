@@ -1,53 +1,70 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using PathCreation.Examples;
+using PizzaMaker.Code.Services.GameFinishDetector;
+using PizzaMaker.Code.Services.UI;
+using PizzaMaker.Code.UI.Buttons;
+using PizzaMaker.Code.UI.Layers;
+using PizzaMaker.Code.UI.Windows;
 using UnityEngine;
 
-public class UIRoot : MonoBehaviour
+namespace PizzaMaker.Code.UI
 {
-    [SerializeField] private WindowsHolder _windowsHolder;
-    [SerializeField] private LayersHolder _layersHolder;
-
-    private UIStateMachine _stateMachine;
-    private WindowsService _windowsService;
-
-    private List<LevelProgressBar> _levelProgressBars = new();
-
-    private void Awake()
+    public class UIRoot : MonoBehaviour
     {
-        _windowsService = new WindowsService(_windowsHolder.Windows);
-        var layersActivator = new LayersActivator(_layersHolder.Layers);
+        private List<LevelProgressBar> _levelProgressBars = new();
+        private LayersStateMachine _stateMachine;
+        
+        private IWindowsService _windowsService;
+        private IGameFinishDetector _gameFinishDetector;
+        private ILayersActivator _layersActivator;
+        private Func<float> _getLevelProgress;
+        
+        public void Init(
+            IGameFinishDetector gameFinishDetector,
+            IWindowsService windowsService,
+            ILayersActivator layersActivator,
+            Func<float> getLevelProgress)
+        {
+            _getLevelProgress = getLevelProgress;
+            _layersActivator = layersActivator;
+            _gameFinishDetector = gameFinishDetector;
+            _windowsService = windowsService;
+        }
 
-        _stateMachine = new UIStateMachine(layersActivator);
-        _stateMachine.GameStateEntered += () => GameManager.Instance.gameStarted = true;
+        public void Enable()
+        {
+            _stateMachine = new LayersStateMachine(_layersActivator);
+            _stateMachine.GameStateEntered += () => GameManager.Instance.gameStarted = true;
+        
+            _gameFinishDetector.Finished += HandleWinLose;
+        
+            InitElements();
+        
+            _stateMachine.EnterMenuState();
+        }
 
+        private void Update()
+        {
+            _levelProgressBars?.ForEach(bar =>
+                bar.UpdateProgress(_getLevelProgress?.Invoke() ?? 0f));
+        }
 
-        InitElements(_windowsService);
-    }
+        private void HandleWinLose(GameResult result)
+        {
+            _stateMachine.EnterFinishState();
 
-    private void Start() => _stateMachine.EnterMenuState();
+            _windowsService.Open(result.IsWin ? WindowId.Win : WindowId.Lose);
+        }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space)) HandleWinLose(true);
+        private void InitElements()
+        {
+            List<OpenWindowButton> openWindowButtons = GetComponentsInChildren<OpenWindowButton>(true).ToList();
+            List<StartGameButton> startGameButtons = GetComponentsInChildren<StartGameButton>(true).ToList();
+            _levelProgressBars = GetComponentsInChildren<LevelProgressBar>(true).ToList();
 
-        _levelProgressBars.ForEach(bar => bar.UpdateProgress(PathFollower.Instance.pathProgress));
-    }
-
-    private void HandleWinLose(bool isWin)
-    {
-        _stateMachine.EnterFinishState();
-
-        _windowsService.Open(isWin ? WindowId.Win : WindowId.Lose);
-    }
-
-    private void InitElements(WindowsService windowsService)
-    {
-        List<OpenWindowButton> openWindowButtons = GetComponentsInChildren<OpenWindowButton>(true).ToList();
-        List<StartGameButton> startGameButtons = GetComponentsInChildren<StartGameButton>(true).ToList();
-        _levelProgressBars = GetComponentsInChildren<LevelProgressBar>(true).ToList();
-
-        startGameButtons.ForEach(button => button.Initialize(_stateMachine.EnterGameState));
-        openWindowButtons.ForEach(button => button.Initialize(windowsService));
+            startGameButtons.ForEach(button => button.Initialize(_stateMachine.EnterGameState));
+            openWindowButtons.ForEach(button => button.Initialize(_windowsService));
+        }
     }
 }
