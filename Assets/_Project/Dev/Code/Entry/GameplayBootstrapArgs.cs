@@ -1,7 +1,7 @@
 ﻿using System;
-using PizzaMaker.Code.Services;
+using PizzaMaker.Code.Services.Scene;
 
-namespace PizzaMaker.Code.EntryPoint
+namespace PizzaMaker.Code.Entry
 {
     public class GameplayBootstrapArgs
     {

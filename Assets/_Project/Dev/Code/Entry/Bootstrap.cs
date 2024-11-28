@@ -1,10 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using CourseGame.Develop.DI;
 using PizzaMaker.Code.Services;
 using UnityEngine;
 
-namespace PizzaMaker.Code.EntryPoint
+namespace PizzaMaker.Code.Entry
 {
     public class Bootstrap : MonoBehaviour
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CourseGame.Develop.DI
+namespace PizzaMaker.Code
 {
     public class DIContainer
     {

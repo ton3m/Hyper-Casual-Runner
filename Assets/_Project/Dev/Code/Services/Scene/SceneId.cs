@@ -1,4 +1,4 @@
-﻿namespace PizzaMaker.Code.Services
+﻿namespace PizzaMaker.Code.Services.Scene
 {
     public enum SceneId
     {
