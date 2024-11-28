@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PizzaMaker.Code
+namespace CourseGame.Develop.DI
 {
     public class DIContainer
     {
@@ -41,6 +41,14 @@ namespace PizzaMaker.Code
             throw new InvalidOperationException($"Registration for type {typeof(T)} not found");
         }
 
+        private T CreateFrom<T>(Registration registration)
+        {
+            if (registration.Instance == null && registration.Creator != null)
+                registration.Instance = registration.Creator(this);
+
+            return (T)registration.Instance;
+        }
+
         public void RegisterAsSingle<T>(Func<DIContainer, T> creator)
         {
             if (_container.ContainsKey(typeof(T)))
@@ -53,18 +61,11 @@ namespace PizzaMaker.Code
             _container[typeof(T)] = registration;
         }
 
-        private T CreateFrom<T>(Registration registration)
+        public class Registration
         {
-            if (registration.Instance == null && registration.Creator != null)
-                registration.Instance = registration.Creator(this);
-
-            return (T)registration.Instance;
-        }
-
-        private class Registration
-        {
-            public readonly Func<DIContainer, object> Creator;
+            public Func<DIContainer, object> Creator;
             public object Instance { get; set; }
+
 
             public Registration(object instance) => Instance = instance;
 
