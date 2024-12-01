@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace PizzaMaker.Code.Services.GameFinishDetector
 {
-    public class GameFinishDetector2 :IUpdateable, IGameFinishDetector
+    public class GameFinishDetector :IUpdateable, IGameFinishDetector
     {
         public event Action<GameResult> Finished;
         
@@ -13,7 +13,7 @@ namespace PizzaMaker.Code.Services.GameFinishDetector
         private readonly List<Func<bool>> _winConditions = new();
         private readonly List<Func<bool>> _loseConditions = new();
         
-        public GameFinishDetector2(
+        public GameFinishDetector(
             IEnumerable<Func<bool>> winConditions,
             IEnumerable<Func<bool>> loseConditions)
         {
@@ -21,10 +21,14 @@ namespace PizzaMaker.Code.Services.GameFinishDetector
             _loseConditions.AddRange(loseConditions);
         }
         
-        public GameFinishDetector2(Func<bool> winCondition, Func<bool> loseCondition)
+        public GameFinishDetector(Func<bool> winCondition, Func<bool> loseCondition)
         {
             _winConditions.Add(winCondition);
             _loseConditions.Add(loseCondition);
+        }
+
+        public GameFinishDetector()
+        {
         }
 
         public void Update()
@@ -33,14 +37,28 @@ namespace PizzaMaker.Code.Services.GameFinishDetector
             
             if (_winConditions.Any(condition => condition.Invoke()))
             {
-                Finished?.Invoke(GameResult.Won);
-                _isFinished = true;
+                Win();
             }
             else if (_loseConditions.Any(condition => condition.Invoke()))
             {
-                Finished?.Invoke(GameResult.Lost);
-                _isFinished = true;
+                Lose();
             }
+        }
+
+        public void Lose()
+        {
+            if (_isFinished) return;
+            
+            _isFinished = true;
+            Finished?.Invoke(GameResult.Lost);
+        }
+
+        public void Win()
+        {
+            if (_isFinished) return;
+            
+            _isFinished = true;
+            Finished?.Invoke(GameResult.Won);
         }
     }
 }

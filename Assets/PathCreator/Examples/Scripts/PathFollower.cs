@@ -1,11 +1,16 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace PathCreation.Examples
 {
     public class PathFollower : MonoBehaviour
     {
         private static PathFollower instance;
-        public static PathFollower Instance { get => instance; }
+
+        public static PathFollower Instance
+        {
+            get => instance;
+        }
 
         public PathCreator pathCreator;
         public EndOfPathInstruction endOfPathInstruction;
@@ -31,7 +36,8 @@ namespace PathCreation.Examples
 
         private void Update()
         {
-            if (pathCreator != null && GameManager.Instance.gameStarted && !GameManager.Instance.gameWon && !GameManager.Instance.gameLost)
+            if (pathCreator != null && GameManager.Instance.gameStarted && !GameManager.Instance.gameWon &&
+                !GameManager.Instance.gameLost)
             {
                 distanceTravelled += speed * Time.deltaTime;
                 transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);

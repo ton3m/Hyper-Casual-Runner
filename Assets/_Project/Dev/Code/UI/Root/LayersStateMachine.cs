@@ -3,10 +3,10 @@ using PizzaMaker.Code.UI.Layers;
 
 namespace PizzaMaker.Code.UI
 {
-    public class LayersStateMachine
+    public class LayersStateMachine : IGameUIStatesEvents
     {
         public event Action MenuStateEntered;
-        public event Action GameStateEntered;
+        public event Action GameplayStateEntered;
         public event Action FinishStateEntered;
     
         private readonly ILayersActivator _layersActivator;
@@ -29,7 +29,7 @@ namespace PizzaMaker.Code.UI
             _layersActivator.DisableAll();
             _layersActivator.Enable(LayerId.Game);
         
-            GameStateEntered?.Invoke();
+            GameplayStateEntered?.Invoke();
         }
     
         public void EnterFinishState()
@@ -38,5 +38,12 @@ namespace PizzaMaker.Code.UI
         
             FinishStateEntered?.Invoke();
         }
+    }
+
+    public interface IGameUIStatesEvents
+    {
+        event Action MenuStateEntered;
+        event Action GameplayStateEntered;
+        event Action FinishStateEntered;
     }
 }

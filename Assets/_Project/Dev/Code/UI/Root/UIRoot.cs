@@ -12,6 +12,8 @@ namespace PizzaMaker.Code.UI
 {
     public class UIRoot : MonoBehaviour
     {
+        public IGameUIStatesEvents Events => _stateMachine;
+        
         private List<LevelProgressBar> _levelProgressBars = new();
         private LayersStateMachine _stateMachine;
         
@@ -30,13 +32,12 @@ namespace PizzaMaker.Code.UI
             _layersActivator = layersActivator;
             _gameFinishDetector = gameFinishDetector;
             _windowsService = windowsService;
+            
+            _stateMachine = new LayersStateMachine(_layersActivator);
         }
 
         public void Enable()
         {
-            _stateMachine = new LayersStateMachine(_layersActivator);
-            _stateMachine.GameStateEntered += () => GameManager.Instance.gameStarted = true;
-        
             _gameFinishDetector.Finished += HandleWinLose;
         
             InitElements();
