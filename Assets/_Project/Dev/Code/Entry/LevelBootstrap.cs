@@ -119,5 +119,16 @@ namespace PizzaMaker.Code.Entry
                 return detector;
             });
         }
+
+        private void RegScoreCalculate()
+        {
+            var timingTest = FindAnyObjectByType<TimingTestView>();
+            _container.RegisterAsSingle(c => new ScoreCalculating(() => timingTest.NormalizedPosition));
+            
+            var scoreCalculating = _container.Resolve<ScoreCalculating>();
+            
+
+            timingTest.IndicatorStoped += scoreCalculating.OnIndicatorStop;
+        }
     }
 }
